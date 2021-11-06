@@ -1,0 +1,6 @@
+Django
+djangorestframework
+django-filter
+python-slugify
+psycopg2>2.7.5
+flake8
