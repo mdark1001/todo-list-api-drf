@@ -24,7 +24,7 @@ class TaksTest(TestCase):
         """Create multiple tasks for an user """
         tasks =[
             {
-                'name':'Take out the garbase',
+                'name':'Take out the garbage',
                 'planned':date.today(),
                 'priority':3,
                 'user': self.user,
