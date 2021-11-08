@@ -3,7 +3,6 @@
 @date: 11/06/2021
 """
 from rest_framework import serializers
-from django.conf import settings
 from todo_list.models import Task
 
 class TaskSerializer(serializers.Serializer):
@@ -14,6 +13,7 @@ class TaskSerializer(serializers.Serializer):
     )
     slug = serializers.CharField(
         required=False,
+        read_only=True,
     )
     planned = serializers.DateField(
 
@@ -26,10 +26,10 @@ class TaskSerializer(serializers.Serializer):
         default=serializers.CurrentUserDefault()
     )
     def create(self,validated_data):
-        # validated_data['user'] = self.request.user
+        """Create a new task for user logged in request  """
         return Task.objects.create(**validated_data)
     def update(self,obj,validated_data):
-        """  """
+        """Update partial task information.  """
         Task.objects.filter(pk=obj.pk).update(**validated_data)
         task = Task.objects.get(pk=obj.pk)
         return task

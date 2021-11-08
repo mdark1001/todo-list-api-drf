@@ -108,8 +108,71 @@ class TaksApiEndpointsTest(TestCase):
         self.client.force_authenticate(user=self.user)
         url = reverse('tasks:update',kwargs={'slug':task.slug})
         res = self.client.put(url,{'completed':True})
-        print(res.content)
+        #print(res.content)
         self.assertEqual(res.status_code,status.HTTP_200_OK)
         task = Task.objects.get(slug=task.slug)
         self.assertTrue(task.completed)
+
+    def test_change_date_planned_task(self):
+        """Update partial task to check completed it"""
+        task = Task.objects.create(**{
+            'name':'A new Awesome taks',
+            'user': self.user,
+            'planned': date.today(),
+            'priority':5,
+        })
+        self.client.force_authenticate(user=self.user)
+        url = reverse('tasks:update',kwargs={'slug':task.slug})
+        res = self.client.put(url,{'planned':date.today() + timedelta(days=3)})
+        #print(res.content)
+        self.assertEqual(res.status_code,status.HTTP_200_OK)
+        task = Task.objects.get(slug=task.slug)
+
+    def test_get_task_by_slug(self):
+        """Get a specific task using slug """
+        slug = 'super-slug-name'
+        task = Task.objects.create(**{
+            'name':'A new Awesome taks',
+            'user': self.user,
+            'planned': date.today(),
+            'priority':5,
+            'slug':slug
+        })
+        self.client.force_authenticate(user=self.user)
+        url = reverse('tasks:update',kwargs={'slug':slug})
+        res = self.client.get(url)
+        # print(res.content)
+        self.assertEqual(res.status_code,status.HTTP_200_OK)
+    
+    def test_try_retrieve_task_for_another_user(self):
+        """Try to retrieve task for another user using the slug name """
+        slug = 'super-slug-name'
+        task = Task.objects.create(**{
+            'name':'A new Awesome taks',
+            'user': self.user_two,
+            'planned': date.today(),
+            'priority':5,
+            'slug':slug
+        })
+        self.client.force_authenticate(user=self.user)
+        url = reverse('tasks:update',kwargs={'slug':slug})
+        res = self.client.get(url)
+        # print(res.content)
+        self.assertEqual(res.status_code,status.HTTP_403_FORBIDDEN)
+    def test_try_update_user_task_from_another_one(self):
+        """Try to update user's task from another one user. """
+        slug = 'super-slug-name'
+        task = Task.objects.create(**{
+            'name':'A new Awesome taks',
+            'user': self.user_two,
+            'planned': date.today(),
+            'priority':5,
+            'slug':slug
+        })
+        self.client.force_authenticate(user=self.user)
+        url = reverse('tasks:update',kwargs={'slug':slug})
+        res = self.client.put(url,{'completed':True})
+        self.assertEqual(res.status_code,status.HTTP_403_FORBIDDEN)
+        task_one = Task.objects.get(slug=slug)
+        self.assertEqual(task.completed,task_one.completed)
 
