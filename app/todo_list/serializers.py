@@ -28,5 +28,8 @@ class TaskSerializer(serializers.Serializer):
     def create(self,validated_data):
         # validated_data['user'] = self.request.user
         return Task.objects.create(**validated_data)
-    
-
+    def update(self,obj,validated_data):
+        """  """
+        Task.objects.filter(pk=obj.pk).update(**validated_data)
+        task = Task.objects.get(pk=obj.pk)
+        return task

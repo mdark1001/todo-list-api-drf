@@ -77,7 +77,7 @@ class TaksApiEndpointsTest(TestCase):
         total_taks_user = len(list(filter(lambda t: t['user']==self.user,self.tasks)))
         #print(self.user)
         res = self.client.get(TASK_URL)
-        print(res.content)
+        # print(res.content)
         self.assertEqual(res.status_code,status.HTTP_200_OK)
         self.assertEqual(res.data['count'],total_taks_user)
 
@@ -97,4 +97,19 @@ class TaksApiEndpointsTest(TestCase):
         self.assertEqual(res.status_code,status.HTTP_200_OK)
         self.assertIn('results',res.data)
 
-    
+    def test_change_completed_task(self):
+        """Update partial task to check completed it"""
+        task = Task.objects.create(**{
+            'name':'A new Awesome taks',
+            'user': self.user,
+            'planned': date.today(),
+            'priority':5,
+        })
+        self.client.force_authenticate(user=self.user)
+        url = reverse('tasks:update',kwargs={'slug':task.slug})
+        res = self.client.put(url,{'completed':True})
+        print(res.content)
+        self.assertEqual(res.status_code,status.HTTP_200_OK)
+        task = Task.objects.get(slug=task.slug)
+        self.assertTrue(task.completed)
+
