@@ -159,6 +159,7 @@ class TaksApiEndpointsTest(TestCase):
         res = self.client.get(url)
         # print(res.content)
         self.assertEqual(res.status_code,status.HTTP_403_FORBIDDEN)
+    
     def test_try_update_user_task_from_another_one(self):
         """Try to update user's task from another one user. """
         slug = 'super-slug-name'
@@ -176,3 +177,4 @@ class TaksApiEndpointsTest(TestCase):
         task_one = Task.objects.get(slug=slug)
         self.assertEqual(task.completed,task_one.completed)
 
+    # TODO ---> Hacer los test de eliminar una tarea.

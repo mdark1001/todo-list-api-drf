@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-573_q=&o&d2*%@#3ej@5sxljhx0ukd617(tg&8t5vsm2(48mla
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '0.0.0.0'
+    '0.0.0.0',
+    'localhost',
+    '127.0.0.1'
 ]
 
 
@@ -44,12 +46,16 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     # own apps 
-    'todo_list',
+    'todo_list.apps.TodoListConfig',
+    'users.apps.UsersConfig'
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    #cors
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -146,3 +152,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 30,
     # 'DEFAULT_FILTER_BACKENDS': [' 'django_filters.rest_framework.DjangoFilterBackend']
 }
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8080',
+]
